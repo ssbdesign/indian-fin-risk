@@ -1,0 +1,7 @@
+ticker,factor,observations,pearson_correlation
+SBI,repo_rate_pct,131,-0.11377858212305504
+SBI,repo_rate_change_pp,131,0.23709666175811053
+HDFC,repo_rate_pct,131,-0.012175821486970727
+HDFC,repo_rate_change_pp,131,0.13766650563917235
+NIFTY50,repo_rate_pct,131,-0.11472148619909862
+NIFTY50,repo_rate_change_pp,131,0.16011125195945938
