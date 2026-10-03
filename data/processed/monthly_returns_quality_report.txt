@@ -1,0 +1,46 @@
+MONTHLY MARKET RETURNS: DATA QUALITY REPORT
+=======================================================
+Study period: 2015-01 to 2025-12
+Expected calendar months per instrument: 132
+
+INSTRUMENT: SBI
+Monthly rows: 132
+Missing calendar months: []
+Missing monthly returns: 1
+Mean return (%): 1.4315
+Median return (%): 0.7470
+Standard deviation (%): 9.6137
+Minimum return (%): -35.0330
+Maximum return (%): 38.3020
+Returns outside +/-25%:
+  month  monthly_return_pct
+2020-03          -35.033003
+2020-11           29.062085
+2021-02           38.301998
+
+INSTRUMENT: HDFC
+Monthly rows: 132
+Missing calendar months: []
+Missing monthly returns: 1
+Mean return (%): 1.2464
+Median return (%): 0.6361
+Standard deviation (%): 5.9241
+Minimum return (%): -26.8119
+Maximum return (%): 21.7397
+Returns outside +/-25%:
+  month  monthly_return_pct
+2020-03          -26.811866
+
+INSTRUMENT: NIFTY50
+Monthly rows: 132
+Missing calendar months: []
+Missing monthly returns: 1
+Mean return (%): 0.9391
+Median return (%): 1.1119
+Standard deviation (%): 4.5588
+Minimum return (%): -23.2464
+Maximum return (%): 14.6800
+Returns outside +/-25%:
+None
+
+Instrument month coverage aligned: True
