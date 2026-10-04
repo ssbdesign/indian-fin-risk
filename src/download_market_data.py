@@ -1,30 +1,29 @@
-import yfinance as yf
 from pathlib import Path
 
+import yfinance as yf
 
-# The three instruments in our project
 TICKERS = {
     "SBI": "SBIN.NS",
     "HDFC": "HDFCBANK.NS",
+    "ICICI": "ICICIBANK.NS",
+    "AXIS": "AXISBANK.NS",
     "NIFTY50": "^NSEI",
 }
 
-# Our initial research period
-START_DATE = "2015-01-01"
+START_DATE = "2009-12-01"
 END_DATE = "2026-01-01"
 
 
-def download_market_data():
-    # Project root / data / raw
-    output_folder = Path(__file__).resolve().parent.parent / "data" / "raw"
-    output_folder.mkdir(parents=True, exist_ok=True)
+def main():
+    root = Path(__file__).resolve().parent.parent
+    output_dir = root / "data" / "processed"/"validated"
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-    for name, ticker in TICKERS.items():
-
-        print(f"Downloading {name} ({ticker})...")
+    for name, symbol in TICKERS.items():
+        print(f"\nDownloading {name} ({symbol})...")
 
         data = yf.download(
-            ticker,
+            symbol,
             start=START_DATE,
             end=END_DATE,
             auto_adjust=True,
@@ -32,17 +31,25 @@ def download_market_data():
         )
 
         if data.empty:
-            print(f"ERROR: No data found for {name}")
+            print(f"ERROR: No data returned for {name}")
             continue
 
-        output_file = output_folder / f"{name}_daily.csv"
+        # Handle yfinance's MultiIndex columns consistently.
+        if hasattr(data.columns, "nlevels") and data.columns.nlevels > 1:
+            data.columns = data.columns.get_level_values(0)
 
-        data.to_csv(output_file)
+        data = data.reset_index()
+        data.columns = [str(col).lower() for col in data.columns]
+        data = data.rename(columns={"datetime": "date"})
 
-        print(f"Saved {len(data):,} observations to:")
-        print(output_file)
-        print()
+        data["date"] = data["date"].astype(str).str[:10]
+        data["ticker"] = symbol
+
+        output_file = output_dir / f"{name}_daily.csv"
+        data.to_csv(output_file, index=False)
+
+        print(f"Saved {len(data):,} rows to {output_file}")
 
 
 if __name__ == "__main__":
-    download_market_data()
+    main()

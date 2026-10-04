@@ -1,195 +1,173 @@
-
 from pathlib import Path
 
 import pandas as pd
 
-# --------------------------------------------------
-# Paths
-# --------------------------------------------------
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DATA_DIR = PROJECT_ROOT / "data" / "processed"
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data" / "processed"
 DAILY_DIR = DATA_DIR / "validated"
 EVENT_FILE = DATA_DIR / "rbi_policy_events_2015_2025.csv"
-OUTPUT_DIR = PROJECT_ROOT / "reports" / "results"
+OUTPUT_DIR = ROOT / "reports" / "results"
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# --------------------------------------------------
-# Load RBI repo-rate events
-# --------------------------------------------------
-events = pd.read_csv(EVENT_FILE, parse_dates=["effective_date"])
+TICKERS = ["SBI", "HDFC", "ICICI", "AXIS", "NIFTY50"]
+EVENT_START = "2015-01-01"
+EVENT_END = "2025-12-31"
 
-# Keep the analysis period explicit.
-events = events.loc[
-    events["effective_date"].between("2015-01-01", "2025-12-31")
-].copy()
 
-# --------------------------------------------------
-# Load daily stock data
-# --------------------------------------------------
-def load_daily_stock(filename, ticker):
-    path = DAILY_DIR / filename
+def load_daily_stock(ticker):
+    path = DAILY_DIR / f"{ticker}_daily.csv"
 
     if not path.exists():
-        raise FileNotFoundError(f"Daily file not found: {path}")
+        raise FileNotFoundError(
+            f"Missing validated daily file: {path}"
+        )
 
     df = pd.read_csv(path, parse_dates=["date"])
 
-    required_columns = {"date", "close"}
-    missing = required_columns - set(df.columns)
-
+    required = {"date", "close"}
+    missing = required - set(df.columns)
     if missing:
-        raise ValueError(f"{filename} is missing columns: {missing}")
+        raise ValueError(f"{path.name} is missing columns: {missing}")
 
     df = df[["date", "close"]].copy()
     df["close"] = pd.to_numeric(df["close"], errors="coerce")
     df = df.dropna(subset=["date", "close"])
     df = df.sort_values("date")
-    df = df.drop_duplicates(subset=["date"], keep="last")
-    df = df.rename(columns={"close": f"{ticker}_close"})
 
-    # Daily close-to-close percentage return.
-    df[f"{ticker}_return_pct"] = df[f"{ticker}_close"].pct_change() * 100
+    if df["date"].duplicated().any():
+        raise ValueError(f"{path.name} contains duplicate dates.")
+
+    df = df.rename(columns={"close": f"{ticker}_close"})
+    df[f"{ticker}_return_pct"] = (
+        df[f"{ticker}_close"].pct_change(fill_method=None) * 100
+    )
 
     return df
 
 
-sbi = load_daily_stock("SBI_daily.csv", "SBI")
-hdfc = load_daily_stock("HDFC_daily.csv", "HDFC")
-nifty = load_daily_stock("NIFTY50_daily.csv", "NIFTY50")
+def main():
+    if not EVENT_FILE.exists():
+        raise FileNotFoundError(f"Missing RBI event file: {EVENT_FILE}")
 
-# --------------------------------------------------
-# Inspect the event dates against available trading days
-# --------------------------------------------------
-daily_data = {
-    "SBI": sbi,
-    "HDFC": hdfc,
-    "NIFTY50": nifty,
-}
+    events = pd.read_csv(EVENT_FILE, parse_dates=["effective_date"])
+    events = events.loc[
+        events["effective_date"].between(EVENT_START, EVENT_END)
+    ].copy()
 
-for name, df in daily_data.items():
-    print(
-        f"{name}: {df['date'].min().date()} to "
-        f"{df['date'].max().date()}, {len(df)} daily rows"
+    required_event_cols = {
+        "effective_date",
+        "repo_rate_pct",
+        "repo_rate_change_pp",
+    }
+    missing = required_event_cols - set(events.columns)
+    if missing:
+        raise ValueError(f"RBI event file is missing columns: {missing}")
+
+    daily_data = {ticker: load_daily_stock(ticker) for ticker in TICKERS}
+
+    for ticker, df in daily_data.items():
+        print(
+            f"{ticker}: {df['date'].min().date()} to "
+            f"{df['date'].max().date()}, {len(df)} rows"
+        )
+
+    print(f"\nRBI effective-date events: {len(events)}")
+
+    # Diagnostics: is each effective date a trading day?
+    diagnostic = events[
+        ["effective_date", "repo_rate_pct", "repo_rate_change_pp"]
+    ].copy()
+
+    for ticker, df in daily_data.items():
+        diagnostic[f"{ticker}_exact_trading_day"] = diagnostic[
+            "effective_date"
+        ].isin(pd.Index(df["date"]))
+
+    diagnostic.to_csv(
+        OUTPUT_DIR / "policy_event_date_diagnostic.csv",
+        index=False,
     )
 
-print(f"\nRBI effective-date events loaded: {len(events)}")
-print(events[["effective_date", "repo_rate_pct", "repo_rate_change_pp"]]
-      .to_string(index=False))
+    print("\nExact event-date trading-day matches:")
+    for ticker in TICKERS:
+        column = f"{ticker}_exact_trading_day"
+        print(f"{ticker}: {diagnostic[column].sum()} / {len(diagnostic)}")
 
-# Save a diagnostic copy. No event-window returns are calculated yet.
-diagnostic = events[
-    ["effective_date", "repo_rate_pct", "repo_rate_change_pp"]
-].copy()
+    # Inner join to a shared trading calendar.
+    daily = daily_data[TICKERS[0]]
+    for ticker in TICKERS[1:]:
+        daily = daily.merge(daily_data[ticker], on="date", how="inner")
 
-for name, df in daily_data.items():
-    available_dates = pd.Index(df["date"])
-    diagnostic[f"{name}_exact_trading_day"] = (
-        diagnostic["effective_date"].isin(available_dates)
-    )
-
-diagnostic.to_csv(
-    OUTPUT_DIR / "policy_event_date_diagnostic.csv",
-    index=False,
-)
-
-print(
-    "\nSaved event-date diagnostic to:",
-    OUTPUT_DIR / "policy_event_date_diagnostic.csv",
-)
-print("\nExact trading-day matches:")
-for name in daily_data:
-    print(
-        f"{name}: "
-        f"{diagnostic[f'{name}_exact_trading_day'].sum()} / "
-        f"{len(diagnostic)}"
-    )
-
-    # --------------------------------------------------
-    # Effective-date event-window analysis
-    # --------------------------------------------------
-
-    # Merge all three daily datasets on trading date.
-    daily = sbi.merge(hdfc, on="date", how="inner")
-    daily = daily.merge(nifty, on="date", how="inner")
     daily = daily.sort_values("date").reset_index(drop=True)
-
-    # Create trading-day indices for event-window calculations.
     daily["trading_index"] = range(len(daily))
     date_to_index = dict(zip(daily["date"], daily["trading_index"]))
 
-    return_columns = {
-        "SBI": "SBI_close",
-        "HDFC": "HDFC_close",
-        "NIFTY50": "NIFTY50_close",
-    }
-
-    event_results = []
+    results = []
 
     for _, event in events.iterrows():
         event_date = event["effective_date"]
 
-        # Require the effective date to exist in the merged trading calendar.
         if event_date not in date_to_index:
-            print(f"Skipping event without a common trading date: {event_date.date()}")
+            print(f"Skipping non-common trading date: {event_date.date()}")
             continue
 
-        event_idx = date_to_index[event_date]
+        idx = date_to_index[event_date]
         result = {
             "effective_date": event_date,
             "repo_rate_pct": event["repo_rate_pct"],
             "repo_rate_change_pp": event["repo_rate_change_pp"],
         }
 
-        for ticker, close_col in return_columns.items():
-            # Day 0: close-to-close daily return on the effective date.
-            if event_idx >= 1:
-                prev_close = daily.loc[event_idx - 1, close_col]
-                event_close = daily.loc[event_idx, close_col]
+        for ticker in TICKERS:
+            close_col = f"{ticker}_close"
+
+            # Day 0: previous close to effective-date close.
+            if idx >= 1:
+                start = daily.loc[idx - 1, close_col]
+                end = daily.loc[idx, close_col]
                 result[f"{ticker}_day0_return_pct"] = (
-                    (event_close / prev_close - 1) * 100
-                    if prev_close != 0 else float("nan")
+                    (end / start - 1) * 100 if start else float("nan")
                 )
             else:
                 result[f"{ticker}_day0_return_pct"] = float("nan")
 
-            # Cumulative close-to-close return from t-1 close to t+1 close.
-            if event_idx >= 1 and event_idx + 1 < len(daily):
-                start_close = daily.loc[event_idx - 1, close_col]
-                end_close = daily.loc[event_idx + 1, close_col]
+            # 3-trading-day window: close at t-1 through close at t+1.
+            if idx >= 1 and idx + 1 < len(daily):
+                start = daily.loc[idx - 1, close_col]
+                end = daily.loc[idx + 1, close_col]
                 result[f"{ticker}_window_m1_p1_pct"] = (
-                    (end_close / start_close - 1) * 100
-                    if start_close != 0 else float("nan")
+                    (end / start - 1) * 100 if start else float("nan")
                 )
             else:
                 result[f"{ticker}_window_m1_p1_pct"] = float("nan")
 
-            # Wider cumulative window: t-5 close to t+5 close.
-            if event_idx >= 5 and event_idx + 5 < len(daily):
-                start_close = daily.loc[event_idx - 5, close_col]
-                end_close = daily.loc[event_idx + 5, close_col]
+            # 11-trading-day window: close at t-5 through close at t+5.
+            if idx >= 5 and idx + 5 < len(daily):
+                start = daily.loc[idx - 5, close_col]
+                end = daily.loc[idx + 5, close_col]
                 result[f"{ticker}_window_m5_p5_pct"] = (
-                    (end_close / start_close - 1) * 100
-                    if start_close != 0 else float("nan")
+                    (end / start - 1) * 100 if start else float("nan")
                 )
             else:
                 result[f"{ticker}_window_m5_p5_pct"] = float("nan")
 
-        event_results.append(result)
+        results.append(result)
 
-    event_study = pd.DataFrame(event_results)
+    event_study = pd.DataFrame(results)
+    output_file = OUTPUT_DIR / "effective_date_event_study.csv"
+    event_study.to_csv(output_file, index=False)
 
-    event_output = OUTPUT_DIR / "effective_date_event_study.csv"
-    event_study.to_csv(event_output, index=False)
-
-    print("\nEffective-date event study — first 10 events:")
-    print(event_study.head(10).to_string(index=False))
-
-    print("\nAverage event-window returns (%):")
-    summary_columns = [
+    print("\nMean raw returns around effective dates (%):")
+    return_cols = [
         col for col in event_study.columns
         if "return_pct" in col or "window_" in col
     ]
-    print(event_study[summary_columns].mean().round(3).to_string())
+    print(event_study[return_cols].mean().round(3).to_string())
 
-    print(f"\nSaved event-study results to: {event_output}")
+    print(f"\nSaved: {output_file}")
+    print(f"Saved: {OUTPUT_DIR / 'policy_event_date_diagnostic.csv'}")
+
+
+if __name__ == "__main__":
+    main()

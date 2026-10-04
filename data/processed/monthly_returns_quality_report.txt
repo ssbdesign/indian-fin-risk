@@ -1,46 +1,75 @@
 MONTHLY MARKET RETURNS: DATA QUALITY REPORT
-=======================================================
-Study period: 2015-01 to 2025-12
-Expected calendar months per instrument: 132
+============================================================
+Study period: 2010-01 to 2025-12
+Expected months per instrument: 192
 
-INSTRUMENT: SBI
-Monthly rows: 132
+INSTRUMENT: SBIN.NS
+Monthly rows: 192
 Missing calendar months: []
-Missing monthly returns: 1
-Mean return (%): 1.4315
-Median return (%): 0.7470
-Standard deviation (%): 9.6137
+Missing monthly returns: 0
+Mean return (%): 1.3305
+Median return (%): 0.5626
+Standard deviation (%): 9.7276
 Minimum return (%): -35.0330
 Maximum return (%): 38.3020
 Returns outside +/-25%:
   month  monthly_return_pct
-2020-03          -35.033003
+2012-01           27.333936
+2014-03           26.192806
+2020-03          -35.033001
 2020-11           29.062085
-2021-02           38.301998
+2021-02           38.302010
 
-INSTRUMENT: HDFC
-Monthly rows: 132
+INSTRUMENT: HDFCBANK.NS
+Monthly rows: 192
 Missing calendar months: []
-Missing monthly returns: 1
-Mean return (%): 1.2464
-Median return (%): 0.6361
-Standard deviation (%): 5.9241
+Missing monthly returns: 0
+Mean return (%): 1.5449
+Median return (%): 0.9328
+Standard deviation (%): 6.1875
 Minimum return (%): -26.8119
 Maximum return (%): 21.7397
 Returns outside +/-25%:
   month  monthly_return_pct
-2020-03          -26.811866
+2020-03          -26.811879
 
-INSTRUMENT: NIFTY50
-Monthly rows: 132
+INSTRUMENT: ICICIBANK.NS
+Monthly rows: 192
 Missing calendar months: []
-Missing monthly returns: 1
-Mean return (%): 0.9391
-Median return (%): 1.1119
-Standard deviation (%): 4.5588
+Missing monthly returns: 0
+Mean return (%): 1.5755
+Median return (%): 1.2801
+Standard deviation (%): 8.5378
+Minimum return (%): -34.8919
+Maximum return (%): 31.7680
+Returns outside +/-25%:
+  month  monthly_return_pct
+2012-01           31.768047
+2013-10           26.854527
+2020-03          -34.891904
+
+INSTRUMENT: AXISBANK.NS
+Monthly rows: 192
+Missing calendar months: []
+Missing monthly returns: 0
+Mean return (%): 1.4864
+Median return (%): 1.3933
+Standard deviation (%): 9.4812
+Minimum return (%): -45.6475
+Maximum return (%): 33.0343
+Returns outside +/-25%:
+  month  monthly_return_pct
+2012-01           33.034296
+2020-03          -45.647500
+
+INSTRUMENT: ^NSEI
+Monthly rows: 192
+Missing calendar months: []
+Missing monthly returns: 0
+Mean return (%): 0.9560
+Median return (%): 0.8573
+Standard deviation (%): 4.7107
 Minimum return (%): -23.2464
 Maximum return (%): 14.6800
 Returns outside +/-25%:
 None
-
-Instrument month coverage aligned: True
