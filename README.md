@@ -10,7 +10,7 @@ A reproducible Python research project examining **bank-specific equity risk (mi
 
 | Start here | What it contains |
 | :--- | :--- |
-| **[Research abstract — 366 words](reports/ABSTRACT_366_WORDS.md)** | Separate 300–500-word overview of methods, bank-level and macro results, and qualifications |
+| **[Research abstract — 262 words](reports/ABSTRACT_262_WORDS.md)** | Concise, conventional abstract summarizing the methodology, main results and limitations |
 | **[Integrated manuscript](reports/RESEARCH_PAPER.md)** | Complete project: original repo-rate work, daily event windows, four-bank macro models and robustness qualifications |
 | **[Data dictionary & source notes](docs/DATA_DICTIONARY.md)** | Definitions, units, transformations, vendor/source notes and identification limits |
 | **[Research tables](reports/results/)** | Statistics, correlations, model fit, coefficient estimates, event tests, timing and robustness |
