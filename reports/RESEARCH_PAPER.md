@@ -30,6 +30,14 @@ Indian bank returns can respond to systemic equity-market fluctuations, monetary
 
 The exercise is observational, not a causal natural experiment. It does not currently include CPI/inflation; questions about inflation cannot be answered by these models.
 
+### Related literature and interpretive context
+
+Research on common equity-return factors motivates adjusting bank-stock regressions for the broad market rather than reading raw policy correlations in isolation. Fama and French (1993) document shared risk-factor variation in stock and bond returns; the present project uses only a contemporaneous NIFTY 50 market control and does **not** estimate a Fama–French asset-pricing model. Newey and West (1987) motivate the HAC(3) standard errors used for monthly OLS inference, but HAC inference does not identify causality.
+
+MacKinlay (1997) explains how classical event-study identification depends on the event timestamp and construction of expected versus abnormal returns. For India, Edwin Prabu A, Bhattacharyya and Ray (2016) report generally weak index-level reactions to observed monetary-policy announcements, while noting that surprise components may matter. Khuntia and Hiremath (2019) and Edwin Prabu A, Bhattacharyya and Ray (2020) examine the heterogeneous sectoral response to monetary-policy information. These studies motivate the bank-by-bank approach without implying that the reported effective-date raw returns are equivalent to announcement-surprise causal estimates.
+
+**Micro versus macro definition.** This project's micro-level evidence refers to bank-specific stock-price return distributions, volatility, extremes, bank–market co-movement, and conditional coefficients that differ across SBI, HDFC, ICICI and Axis. It does **not** estimate any bank's loan portfolio, funding costs, capital adequacy, non-performing asset ratio or earnings. Macro-financial measures are RBI repo rates, market index returns, option-implied India VIX and USD/INR; CPI/inflation is not included.
+
 ## 2. Data and variable design
 The project uses daily historical closes, consolidated into monthly closes and simple percentage returns. Four securities are identified by Yahoo-style tickers `SBIN.NS`, `HDFCBANK.NS`, `ICICIBANK.NS`, `AXISBANK.NS`; the NIFTY 50 benchmark is `^NSEI`. All five have 192 nonmissing monthly returns in the compiled 2010-2025 dataset. For a price close P, the monthly simple return (percentage units) equals 100(P_t/P_(t-1)-1).
 
@@ -75,6 +83,21 @@ Pairwise bank-return correlations with NIFTY 50 range from **0.6774 (SBI)** to *
 Table entries are HAC(3) estimates from same-month expanded regressions, n=131 each. A **one percentage-point** repo-rate change corresponds to the tabulated coefficient in percentage points of monthly return; actual policy moves are typically much smaller, so coefficients must be scaled accordingly. A one-percent USD/INR rise is associated with around **0.73 percentage-point lower** HDFC monthly return conditional on included controls, but no causal interpretation is warranted. For ICICI, the negative VIX association reaches only marginal nominal 5% significance (p=0.0470) and should not be overstated. Repo-rate *levels* are generally not reliably associated, with HDFC's same-month p=0.0499 borderline. Simple raw exchange-rate correlations are negative for all four banks, whereas their conditional regression coefficients are more heterogeneous.
 
 Multiple individual tests are conducted; reported significance is unadjusted for multiple testing. Since interest-rate changes, macro shocks and stock-market outcomes can respond jointly to news, results are not policy treatment effects.
+
+### Micro-level interpretation: four individual banking stocks
+
+The 2010–2025 bank-specific stock characteristics and February 2015–December 2025 conditional macro responses are distinct analytical layers. These four summaries intentionally avoid inferring unmeasured bank balance-sheet fundamentals from observed share prices.
+
+- **SBI:** Mean monthly return 1.3305%, volatility 9.7276% (highest among the banks), extreme months −35.0330% and +38.3020%. Correlation with NIFTY 50 is 0.6774. In the expanded same-month regression its market coefficient is +1.2388 (p<0.001), and its repo-change coefficient +7.1022 (p=0.0065) remains +7.4703 (p=0.0155) after excluding March–December 2020. VIX and USD/INR same-month coefficients are not significant at 5%.
+- **HDFC Bank:** Mean monthly return 1.5449%, monthly volatility 6.1875% (lowest among four bank securities). NIFTY correlation is 0.7783 and the conditional same-month market coefficient is +0.9086 (p<0.001). HDFC's USD/INR coefficient is −0.7329 (p=0.0019), retaining sign and nominal significance at −0.7885 (p=0.0002) in the exclusion sample. The original prior-month repo-rate change yields −2.8635 (p=0.0117, n=130) in a *different* timing specification with same-month NIFTY controls; this is not a real-time forecast.
+- **ICICI Bank:** Mean monthly return 1.5755% (highest bank monthly average), volatility 8.5378%, NIFTY correlation 0.7514. Same-month repo change +3.8362 (p=0.0263) and India VIX −0.1329 (p=0.0470) lose nominal significance after omitting the 2020 shock months (p=0.1405 and p=0.7062 respectively). The VIX result is statistically fragile.
+- **Axis Bank:** Mean monthly return 1.4864%, volatility 9.4812%; the observed worst monthly return −45.6475% is the most negative in the five-instrument set. NIFTY correlation is 0.7569 and same-month market coefficient +1.4277 (p<0.001). Its positive repo-change coefficient +5.3289 (p=0.0292) decreases to +2.1736 (p=0.3960) after the 2020 exclusion.
+
+Because these are individual equity outcomes, a higher mean return or lower price volatility does not necessarily indicate higher bank profitability, better liquidity, lower credit risk, or superior risk-adjusted performance. Those propositions would require bank financial statements, more controls and different models.
+
+### Interpreting policy and currency coefficient units
+
+A repo-change coefficient is denominated in **monthly stock-return percentage points per one percentage-point increase in the repo rate**. For example, SBI's estimated +7.1022 coefficient multiplied by a hypothetical +0.25 percentage-point repo movement gives +1.7756 percentage points as a linear *conditional association*; it is **not** a forecast or causal effect of a 25-basis-point hike. A +1% USD/INR monthly change indicates INR depreciation and corresponds to HDFC's estimated −0.7329-percentage-point conditional association. India VIX levels are index points, and the lagged VIX variable is last month's **close**, not last month's mean.
 
 ## 7. Model comparison and lagged specification: RQ4-RQ5
 
@@ -166,6 +189,12 @@ The earlier RBI effective-date study further suggests negative SBI raw and bank-
 The combined project answers seven descriptive and associative research questions using four bank stocks and NIFTY 50, including the original repo-rate and effective-date studies. Compared with the diversified benchmark, the individual banking stocks show higher historical volatility and somewhat higher raw average monthly returns. Market returns correlate strongly with all bank returns, and this conditional relation survives adjustment for included macro measures. Positive repo-change relationships for selected banks and a negative USD/INR relationship for HDFC emerge in the original sample; only the SBI rate-change and HDFC exchange-rate associations among the highlighted findings retain conventional significance in the specified 2020-exclusion check. A nominally significant ICICI VIX association is particularly sample-sensitive. The principal contribution is a bank-by-bank, common-sample comparison with transparent robustness qualifications, rather than causal claims or forecasts.
 
 ## References
+- Fama, E. F., & French, K. R. (1993). Common risk factors in the returns on stocks and bonds. *Journal of Financial Economics*, 33(1), 3–56. https://doi.org/10.1016/0304-405X(93)90023-5
+- MacKinlay, A. C. (1997). Event Studies in Economics and Finance. *Journal of Economic Literature*, 35(1), 13–39. https://ideas.repec.org/a/aea/jeclit/v35y1997i1p13-39.html
+- Edwin Prabu A, Bhattacharyya, I., & Ray, P. (2016). Is the stock market impervious to monetary policy announcements: Evidence from emerging India. *International Review of Economics & Finance*, 46, 166–179. https://doi.org/10.1016/j.iref.2016.09.007
+- Khuntia, S., & Hiremath, G. S. (2019). Monetary Policy Announcements and Stock Returns: Some Further Evidence from India. *Journal of Quantitative Economics*, 17(4). https://ideas.repec.org/a/spr/jqecon/v17y2019i4d10.1007_s40953-019-00158-y.html
+- Edwin Prabu A, Bhattacharyya, I., & Ray, P. (2020). Impact of monetary policy on the Indian stock market: Does the devil lie in the detail? *Indian Economic Review*, 55, 27–50. https://doi.org/10.1007/s41775-020-00078-2
+
 [1] National Stock Exchange of India, **India VIX Index**: https://www.nseindia.com/static/products-services/indices-indiavix-index
 
 [2] National Stock Exchange of India, **Nifty 50 Index**: https://www.nseindia.com/static/products-services/indices-nifty50-index
