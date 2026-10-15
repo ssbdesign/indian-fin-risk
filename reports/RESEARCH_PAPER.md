@@ -1,13 +1,15 @@
 # Monetary Policy, Market Risk, and Exchange-Rate Movements: Evidence from Four Indian Banking Stocks
 
-**Research-paper draft | Data end date: December 2025 | Prepared October 2026**
+**Integrated research-paper draft | Data end date: December 2025 | Prepared October 2026**
 
 **Study scope.** Four NSE-listed banks (State Bank of India, HDFC Bank, ICICI Bank and Axis Bank) and the NIFTY 50. Descriptive sample: January 2010-December 2025 (192 observations per instrument). Multivariate sample: February 2015-December 2025 (131 observations per bank).
 
 ## Abstract
 This study examines whether monthly returns of major Indian bank stocks are associated with broad equity-market performance, RBI repo-rate conditions, option-implied market volatility and USD/INR movements. Five instrument series provide 192 monthly return observations each for descriptive analysis; four bank-specific ordinary least-squares regressions are estimated using 131 aligned monthly observations from February 2015 through December 2025, with heteroskedasticity-and-autocorrelation-consistent (HAC) standard errors. In the expanded same-month regressions, the NIFTY 50 coefficient is positive and strongly significant for all four banks (range: 0.909-1.428). Positive repo-rate-change coefficients appear for SBI, ICICI and Axis, but only the SBI coefficient stays significant after excluding March-December 2020. HDFC's negative USD/INR coefficient persists under this exclusion, while ICICI's marginally significant VIX coefficient does not. Expanded models yield only modest gains in in-sample fit, and lagged macro coefficients do not reach 5% significance. The evidence indicates strong common-market co-movement alongside heterogeneous and sample-sensitive additional macro associations; it does not establish causality or predictive performance.
 
-**Keywords:** Indian banks; RBI repo rate; NIFTY 50; India VIX; USD/INR; HAC regression; sensitivity analysis.
+The study additionally incorporates the project's original three-instrument repo-rate correlations, single-factor and market-controlled models, the one-month policy-timing comparison, and an effective-date analysis of 26 RBI repo-rate changes (18 cuts and eight hikes). In that preliminary event study, SBI's mean three-trading-day raw return is -1.107% (p=0.0288); the SBI-minus-NIFTY return difference is -0.804 percentage points (p=0.0272). These are nominal, multiple-test-unadjusted event-window associations, not verified policy-surprise effects.
+
+**Keywords:** Indian banks; RBI repo rate; NIFTY 50; India VIX; USD/INR; event-window returns; HAC regression; sensitivity analysis.
 
 ## 1. Introduction and research questions
 Indian bank returns can respond to systemic equity-market fluctuations, monetary-policy expectations, funding costs, economic conditions, currency changes and shifts in risk appetite. Simply comparing two variables can conceal these interrelationships. The central question is whether specific macro-financial variables have an identifiable *conditional association* with banks' monthly returns, after accounting for the broad market.
@@ -21,6 +23,10 @@ Indian bank returns can respond to systemic equity-market fluctuations, monetary
 **RQ4.** Do India VIX and monthly USD/INR changes add explanatory information, and does that information differ across banks?
 
 **RQ5.** Are the findings stable after excluding the turbulent March-December 2020 period? Do lagged macro measures demonstrate evidence of forecasting usefulness?
+
+**RQ6.** What did the original SBI/HDFC/NIFTY 50 repo-only analysis find, and does the interpretation change when controlling for broad-market movements or lagging repo-rate changes?
+
+**RQ7.** How did four banks and NIFTY 50 behave around the effective dates of recorded RBI policy-rate changes, including cuts versus hikes and market-relative returns?
 
 The exercise is observational, not a causal natural experiment. It does not currently include CPI/inflation; questions about inflation cannot be answered by these models.
 
@@ -93,15 +99,71 @@ Expanded same-month models raise in-sample R² modestly. However, larger R² alo
 
 Sensitivity figures were transcribed to four decimals from a successful local robustness run; see `reports/results/robustness_key_results.csv`. Both subsamples use the same HAC(3) estimator and model controls, with n=131 and n=121 respectively. Excluding ten months lowers statistical power and may change covariate distributions; changes in p-values by themselves do not establish differences in structural coefficients. The exclusion window is an analytical diagnostic, not a definitive separation of the pandemic's economic effects.
 
-## 9. Interpretation, limitations and extensions
-The most defensible synthesis is that the market-wide component is the dominant consistent association: positive NIFTY co-movement appears for every bank. Monetary-policy, implied-volatility and exchange-rate coefficients are heterogeneous, with some sensitive to a small set of turbulent months. The sample provides meaningful bank-specific hypotheses for further study, but not an investment trading rule.
+## 9. Original repo-rate analysis and policy-event study: RQ6-RQ7
 
-**Limitations:** (i) observational simultaneity, policy endogeneity and omitted variables; (ii) monthly aggregation masks intra-month timing and policy announcements; (iii) possible price adjustments, dividends and provider differences have not undergone an independent source-by-source audit; (iv) simultaneous repo-rate level and change can complicate interpretation; (v) small event counts and excluded months affect inference; (vi) multiple comparisons and no correction for false discovery; (vii) lagged-factor analysis has same-month controls and no rolling/holdout out-of-sample evaluation; (viii) CPI inflation, bank financial statements, monetary-policy surprise data and cross-sectional confounders are not yet modeled.
+This section integrates the *earlier* analyses already committed to the repository, which used SBI, HDFC and NIFTY 50 as the original three-instrument scope before adding ICICI and Axis to the macro regressions. Original repo-rate models were estimated on the February 2015-December 2025 window (131 monthly observations each), not the 2010-2025 descriptive sample. The script `src/run_financial_analysis.py` has been updated to normalize current ticker symbols and preserve the original 131-month analysis window, preventing the expanded dataset from silently changing the earlier research design.
+
+### 9.1 Repo-rate correlations, single-factor and market-controlled regressions
+
+| Instrument | Corr. with repo level | Corr. with repo change | Repo-change-only coefficient (p) |
+|---|---:|---:|---:|
+| SBI | -0.1138 | 0.2371 | 14.3778 (0.0819) |
+| HDFC | -0.0122 | 0.1377 | 5.1444 (0.4162) |
+| NIFTY 50 | -0.1147 | 0.1601 | 4.6042 (0.4081) |
+
+The low absolute correlations with repo **levels** support the original finding that simple linear associations were small in this sample. The policy-change correlations are more positive but remain modest. None of the three *single-variable* repo-change OLS coefficients is significant at 5% with HAC(3) standard errors. The coefficient units are percentage points of monthly stock/index return for a **one-percentage-point** repo-rate change, which is considerably larger than a typical policy increment.
+
+When repo level, repo change and same-month NIFTY return are included in SBI and HDFC bank models, the earlier market-controlled results are:
+
+| Bank | Repo-level coefficient (p) | Repo-change coefficient (p) | NIFTY coefficient (p) | R² |
+|---|---:|---:|---:|---:|
+| SBI | -0.3587 (0.5323) | 8.0363 (0.0010) | 1.3746 (<0.001) | 0.4774 |
+| HDFC | 0.4502 (0.0904) | 0.4620 (0.7725) | 1.0204 (<0.001) | 0.6119 |
+
+Controlling for the market makes SBI's positive same-month repo-change coefficient nominally significant, even though the single-factor model did not pass 5%. This is consistent with joint market co-movement and overlapping macro information; it **does not** show that raising repo rates causes bank shares to gain. These SBI/HDFC baseline coefficients are consistent to rounding with the later expanded study's baseline models, providing useful continuity between the project's original and extended phases.
+
+### 9.2 Original one-month timing comparison
+
+The earlier script also compared the original same-month repo-change model against a model using the *previous month's* repo-rate change, alongside **current-month** repo level and NIFTY return. This is a timing sensitivity comparison, not a complete forecasting design.
+
+| Bank | Same-month repo change coefficient (p), n=131 | Prior-month repo change coefficient (p), n=130 |
+|---|---:|---:|
+| SBI | 8.0363 (0.0010) | 3.0267 (0.5858) |
+| HDFC | 0.4620 (0.7725) | -2.8635 (0.0117) |
+
+The HDFC prior-month negative coefficient is significant at an unadjusted 5% level, but it differs in sign from the same-month estimate and is estimated on one fewer month. It needs further specification checks, especially with multiple testing and contemporaneous market controls. This finding **does not conflict** with the newer result that the added lagged **VIX and USD/INR variables** fail to achieve individual 5% significance: these are different regressors in different models.
+
+### 9.3 Effective-date event-window returns
+
+A separate daily-frequency event study uses 26 RBI **repo-rate effective dates** from 2015-2025: **18 cuts and eight hikes**. Every event date was present as a trading date for all five instruments in the project's event-date diagnostic. The event-day return is the change from the preceding close through the effective-date close; the three-trading-day window spans trading days t-1 through t+1, and the eleven-trading-day window spans t-5 through t+5. Returns are raw price changes, not abnormal returns from a fitted market model.
+
+| Instrument | Mean event-day return (%) | Mean 3-day return (%) | Mean 11-day return (%) | 3-day p-value against 0 |
+|---|---:|---:|---:|---:|
+| SBI | -0.4741 | -1.1074 | -1.2074 | 0.0288 |
+| HDFC Bank | -0.3164 | -0.2026 | 0.7459 | 0.6675 |
+| ICICI Bank | -0.4413 | -0.7831 | -0.1896 | 0.1486 |
+| Axis Bank | -0.5301 | -0.3971 | 0.2834 | 0.5193 |
+| NIFTY 50 | -0.2017 | -0.3039 | 0.3782 | 0.3519 |
+
+Each cell averages 26 event windows. The 3-day SBI mean of -1.1074% differs from zero at nominal 5% (p=0.0288). Separately, SBI underperformed NIFTY by an average **-0.8036 percentage points** in the three-day window (p=0.0272); HDFC, ICICI and Axis bank-minus-market three-day results were not nominally significant. These differences are **raw bank-minus-index returns**, not formal abnormal returns adjusted for stock-specific market beta.
+
+Hike-versus-cut comparisons are also available in `policy_event_hikes_vs_cuts.csv`. None of the 15 instrument/window comparisons passes an unadjusted 5% threshold. For example, SBI's average 3-day return was -0.0871% around the eight hikes versus -1.5609% around 18 cuts (difference +1.4738 percentage points, Welch p=0.0924). The smaller hike sample and simultaneous news constrain interpretation.
+
+### 9.4 Limits particular to effective-date analysis
+
+The effective date of an RBI repo-rate change may differ from the announcement date, and even same-day decisions can be anticipated by markets. Observed event-window returns combine contemporaneous market news, bank-specific events and policy information; overlapping windows and multiple hypotheses are not fully corrected. The analysis therefore answers **how returns behaved around recorded effective dates**, not how stocks responded causally to unexpected monetary-policy announcements. The two apparently significant SBI results are exploratory, and are subject to multiple-testing concerns.
+
+**Source outputs:** `reports/results/factor_correlations.csv`, `single_factor_regressions.csv`, `market_controlled_regressions.csv`, `timing_sensitivity_results.csv`, `effective_date_event_study.csv`, `policy_event_descriptive_tests.csv`, `policy_event_market_comparison.csv`, `policy_event_hikes_vs_cuts.csv`, and `policy_event_date_diagnostic.csv`. The corresponding daily-window figures already live in `reports/figures/`.
+
+## 10. Interpretation, limitations and extensions
+The earlier RBI effective-date study further suggests negative SBI raw and bank-minus-market returns in the selected three-day event window, but its nominal 5% findings require caution because they use effective rather than verified surprise dates and involve many tests. Across the broader monthly analyses, the most defensible synthesis is that the market-wide component is the dominant consistent association: positive NIFTY co-movement appears for every bank. Monetary-policy, implied-volatility and exchange-rate coefficients are heterogeneous, with some sensitive to a small set of turbulent months. The sample provides meaningful bank-specific hypotheses for further study, but not an investment trading rule.
+
+**Limitations:** (i) event-study policy effective dates, rather than verified surprise announcements, and non-beta-adjusted event-window returns; (ii) observational simultaneity, policy endogeneity and omitted variables; (iii) monthly aggregation masks intra-month timing and policy announcements; (iv) possible price adjustments, dividends and provider differences have not undergone an independent source-by-source audit; (v) simultaneous repo-rate level and change can complicate interpretation; (vi) small event counts and excluded months affect inference; (vii) multiple comparisons and no correction for false discovery; (viii) lagged-factor analysis has same-month controls and no rolling/holdout out-of-sample evaluation; (ix) CPI inflation, bank financial statements, monetary-policy surprise data and cross-sectional confounders are not yet modeled.
 
 **Future extensions:** verified NSE/RBI source reconciliation, inflation/CPI and liquidity factors, announcement-time event-window design, structural break tests and out-of-sample cross-validation. These are proposed work, not completed findings.
 
-## 10. Conclusion
-The analysis answers five descriptive and associative research questions using four bank stocks and NIFTY 50. Compared with the diversified benchmark, the individual banking stocks show higher historical volatility and somewhat higher raw average monthly returns. Market returns correlate strongly with all bank returns, and this conditional relation survives adjustment for included macro measures. Positive repo-change relationships for selected banks and a negative USD/INR relationship for HDFC emerge in the original sample; only the SBI rate-change and HDFC exchange-rate associations among the highlighted findings retain conventional significance in the specified 2020-exclusion check. A nominally significant ICICI VIX association is particularly sample-sensitive. The principal contribution is a bank-by-bank, common-sample comparison with transparent robustness qualifications, rather than causal claims or forecasts.
+## 11. Conclusion
+The combined project answers seven descriptive and associative research questions using four bank stocks and NIFTY 50, including the original repo-rate and effective-date studies. Compared with the diversified benchmark, the individual banking stocks show higher historical volatility and somewhat higher raw average monthly returns. Market returns correlate strongly with all bank returns, and this conditional relation survives adjustment for included macro measures. Positive repo-change relationships for selected banks and a negative USD/INR relationship for HDFC emerge in the original sample; only the SBI rate-change and HDFC exchange-rate associations among the highlighted findings retain conventional significance in the specified 2020-exclusion check. A nominally significant ICICI VIX association is particularly sample-sensitive. The principal contribution is a bank-by-bank, common-sample comparison with transparent robustness qualifications, rather than causal claims or forecasts.
 
 ## References
 [1] National Stock Exchange of India, **India VIX Index**: https://www.nseindia.com/static/products-services/indices-indiavix-index
@@ -114,6 +176,6 @@ The analysis answers five descriptive and associative research questions using f
 
 [5] RBI, **Reference-rate archive** (independent verification resource): https://www.rbi.org.in/scripts/ReferenceRateArchive.aspx
 
-**Reproducibility:** `src/build_analysis_dataset.py` -> `src/run_expanded_macro_analysis.py` -> `src/generate_research_outputs.py` -> `src/run_robustness_checks.py`. Key output paths are documented in `docs/DATA_DICTIONARY.md`.
+**Reproducibility:** `src/run_financial_analysis.py` reproduces the original repo-rate-only study from the committed combined dataset; `src/build_rbi_policy_events.py` -> `src/run_policy_event_study.py` -> `src/analyze_policy_event_study.py` covers the policy effective-date analysis (the original RBI source workbook and validated daily prices are versioned). The expanded analysis is `src/build_analysis_dataset.py` -> `src/run_expanded_macro_analysis.py` -> `src/generate_research_outputs.py` -> `src/run_robustness_checks.py`. Key output paths are documented in `docs/DATA_DICTIONARY.md`.
 
 *This is a ready-to-review research draft, not a peer-reviewed paper. Authorship, acknowledgments, institutional requirements, full bibliographic literature review and independent vendor-data reconciliation remain for final submission review.*
