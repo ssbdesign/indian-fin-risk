@@ -11,7 +11,7 @@ import statsmodels.api as sm
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "data" / "processed" / "analysis_dataset.csv"
 OUTPUT = ROOT / "reports" / "results" / "expanded_macro_regressions.csv"
-BANKS = ("SBI", "HDFC")
+BANKS = ("SBIN.NS", "HDFCBANK.NS", "ICICIBANK.NS", "AXISBANK.NS")
 BASE = ["repo_rate_pct", "repo_rate_change_pp", "nifty_return_pct"]
 ADDITIONAL = ["india_vix_mean", "usd_inr_change_pct"]
 LAGGED = ["india_vix_lag1", "usd_inr_change_pct_lag1"]
@@ -28,11 +28,11 @@ def estimate_models(df: pd.DataFrame) -> pd.DataFrame:
     df["month"] = pd.to_datetime(df["month_end_date"]).dt.to_period("M")
     if df.duplicated(["ticker", "month"]).any():
         raise ValueError("Duplicate ticker-month keys in combined data")
-    market = df.loc[df["ticker"].eq("NIFTY50"), ["month", TARGET]].rename(
+    market = df.loc[df["ticker"].eq("^NSEI"), ["month", TARGET]].rename(
         columns={TARGET: "nifty_return_pct"}
     )
     if market.empty:
-        raise ValueError("NIFTY50 returns required for market-control models")
+        raise ValueError("NIFTY 50 (^NSEI) returns required for market-control models")
     output = []
     for ticker in BANKS:
         bank = df.loc[df["ticker"].eq(ticker)].merge(
