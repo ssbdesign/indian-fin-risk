@@ -1,0 +1,5 @@
+bank,monthly_return_pct,nifty_return_pct,repo_rate_pct,repo_rate_change_pp,india_vix_mean,usd_inr_change_pct
+Axis Bank,1.0,0.7569,-0.0351,0.2423,-0.2173,-0.3522
+HDFC Bank,1.0,0.7783,-0.0122,0.1377,-0.1257,-0.5345
+ICICI Bank,1.0,0.7514,-0.106,0.2131,-0.1964,-0.4192
+SBI,1.0,0.6774,-0.1138,0.2371,-0.1984,-0.4125
