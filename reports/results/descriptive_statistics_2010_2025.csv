@@ -1,0 +1,6 @@
+instrument,observations,mean_return_pct,median_return_pct,volatility_pct,min_return_pct,max_return_pct,annualized_volatility_pct
+SBI,192,1.3305,0.5626,9.7276,-35.033,38.302,33.6973
+HDFC Bank,192,1.5449,0.9328,6.1875,-26.8119,21.7397,21.4343
+ICICI Bank,192,1.5755,1.2801,8.5378,-34.8919,31.768,29.5759
+Axis Bank,192,1.4864,1.3933,9.4812,-45.6475,33.0343,32.8439
+NIFTY 50,192,0.956,0.8573,4.7107,-23.2464,14.68,16.3182
