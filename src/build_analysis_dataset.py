@@ -32,6 +32,25 @@ MACRO_DATASETS = [
         ],
     },
 
+    {
+        "name": "india_vix",
+        "path": PROCESSED_DIR / "india_vix_monthly.csv",
+        "date_column": "date",
+        "columns": [
+            "india_vix_close", "india_vix_mean",
+            "india_vix_change", "india_vix_lag1",
+        ],
+    },
+    {
+        "name": "usd_inr",
+        "path": PROCESSED_DIR / "usd_inr_monthly.csv",
+        "date_column": "date",
+        "columns": [
+            "usd_inr_close", "usd_inr_change_pct",
+            "usd_inr_change_pct_lag1",
+        ],
+    },
+
     # Future example — uncomment and edit when ready:
     #
     # {
