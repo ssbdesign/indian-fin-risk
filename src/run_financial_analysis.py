@@ -62,6 +62,23 @@ def load_data():
             df[column], errors="coerce"
         )
 
+    # Preserve the original repo-rate study's 2015-02 to 2025-12
+    # complete-case sample and its legacy display labels. The combined
+    # dataset now holds 2010-2025 data under Yahoo-style ticker symbols.
+    df["ticker"] = df["ticker"].replace({
+        "SBIN.NS": "SBI",
+        "HDFCBANK.NS": "HDFC",
+        "^NSEI": "NIFTY50",
+    })
+    months = df["month_end_date"].dt.to_period("M")
+    df = df.loc[
+        df["ticker"].isin(TICKERS)
+        & months.between(pd.Period("2015-02"), pd.Period("2025-12"))
+    ].copy()
+    if set(TICKERS) - set(df["ticker"]):
+        raise ValueError("Missing one of SBI, HDFC, NIFTY50 in monthly dataset.")
+    if df.duplicated(["ticker", "month_end_date"]).any():
+        raise ValueError("Duplicate instrument-month rows in repo-rate sample.")
     return df.sort_values(
         ["ticker", "month_end_date"]
     ).copy()
