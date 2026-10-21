@@ -132,7 +132,8 @@ def main():
             else:
                 result[f"{ticker}_day0_return_pct"] = float("nan")
 
-            # 3-trading-day window: close at t-1 through close at t+1.
+            # Inclusive 3-trading-DATE span: close t-1 to close t+1.
+            # This compounds TWO close-to-close daily return intervals, not three.
             if idx >= 1 and idx + 1 < len(daily):
                 start = daily.loc[idx - 1, close_col]
                 end = daily.loc[idx + 1, close_col]
@@ -142,7 +143,8 @@ def main():
             else:
                 result[f"{ticker}_window_m1_p1_pct"] = float("nan")
 
-            # 11-trading-day window: close at t-5 through close at t+5.
+            # Inclusive 11-trading-DATE span: close t-5 to close t+5.
+            # This compounds TEN close-to-close daily return intervals, not eleven.
             if idx >= 5 and idx + 5 < len(daily):
                 start = daily.loc[idx - 5, close_col]
                 end = daily.loc[idx + 5, close_col]
