@@ -168,7 +168,7 @@ A separate daily-frequency event study uses 26 RBI **repo-rate effective dates**
 | Axis Bank | -0.5301 | -0.3971 | 0.2834 | 0.5193 |
 | NIFTY 50 | -0.2017 | -0.3039 | 0.3782 | 0.3519 |
 
-Each cell averages 26 event windows. The SBI t−1-to-t+1 mean of -1.1074% differs from zero at nominal 5% (p=0.0288). Separately, SBI underperformed NIFTY by an average **-0.8036 percentage points** in the t−1-to-t+1 window (p=0.0272); HDFC, ICICI and Axis bank-minus-market three-day results were not nominally significant. These differences are **raw bank-minus-index returns**, not formal abnormal returns adjusted for stock-specific market beta.
+Each cell averages 26 event windows. The SBI t−1-to-t+1 mean of -1.1074% differs from zero at nominal 5% (p=0.0288). Separately, SBI underperformed NIFTY by an average **-0.8036 percentage points** in the t−1-to-t+1 window (p=0.0272); HDFC, ICICI and Axis bank-minus-market t−1-to-t+1 results were not nominally significant. These differences are **raw bank-minus-index returns**, not formal abnormal returns adjusted for stock-specific market beta.
 
 Hike-versus-cut comparisons are also available in `policy_event_hikes_vs_cuts.csv`. None of the 15 instrument/window comparisons passes an unadjusted 5% threshold. For example, SBI's average t−1-to-t+1 return was -0.0871% around the eight hikes versus -1.5609% around 18 cuts (difference +1.4738 percentage points, Welch p=0.0924). The smaller hike sample and simultaneous news constrain interpretation.
 
