@@ -1,0 +1,42 @@
+{
+  "source_commit": "9ca8395a8783da44602ca3e9ee531d291321f7f0",
+  "run_date": "2026-11-12",
+  "versions": {
+    "python": "3.12.14",
+    "pandas": "2.2.3",
+    "numpy": "2.3.5",
+    "statsmodels": "0.15.0",
+    "scipy": "1.17.0"
+  },
+  "inputs": {
+    "data/processed/analysis_dataset.csv": "0405d581e094e5107f78ca67a8875756a436277ae13d0881881c7d1f7c90ade2",
+    "data/processed/monthly_returns_all.csv": "7a1a97c0307f553861875c98bede95a31e6d4170c2324a0114389a45576dc440",
+    "reports/results/expanded_macro_regressions.csv": "764a53528947077d1133aed5f5ea37462831eaaf8520441e7ee715e81776c2ca",
+    "reports/results/policy_event_descriptive_tests.csv": "05ec9c036841ee22492254f9f6167fca69684f0ec442babe99b73570958eabe0",
+    "reports/results/policy_event_market_comparison.csv": "f22198434a05b8fed0d01f9689de36adb8c943716af5543daadda86ec81be1e4",
+    "data/processed/rbi_policy_events_2015_2025.csv": "87a964b5432152541e393bfe1b6cb30298c9027708df0e2febb2190da378c110",
+    "data/processed/validated/AXIS_daily.csv": "9185c73c765f05813d29ffbc233bf03e63261e3200d90d1d8d7c68c7fdc75080",
+    "data/processed/validated/HDFC_daily.csv": "599c00cbb77aa9b87ff657c6aae2885edcab8b5c303b700c777d9389699ba48a",
+    "data/processed/validated/ICICI_daily.csv": "1b6f40fd9c33a0547432140c534dfb05efcad0cb0ccbcdf89c61293989cbd1f3",
+    "data/processed/validated/NIFTY50_daily.csv": "7e71df297bd6eed4bfc7d4f429c110ab2727977ad991fd6c32612d5bdffc8482",
+    "data/processed/validated/SBI_daily.csv": "4315ed90713c65172cfe6b6f4101731d67ac49d9b652bddc8e2a2d8cd7b4a31c"
+  },
+  "raw_rows": 960,
+  "independent_macro_months": 131,
+  "outputs": [
+    "all_model_multiple_testing.csv",
+    "break_tests.csv",
+    "corrected_event_detail.csv",
+    "corrected_event_tests.csv",
+    "diagnostics.csv",
+    "event_endpoint_sensitivity.csv",
+    "event_multiple_testing.csv",
+    "forecast_metrics.csv",
+    "forecast_predictions.csv",
+    "joint_added_factors.csv",
+    "macro_multiple_testing.csv",
+    "reproduced_models.csv",
+    "reproduction.csv",
+    "sensitivity.csv"
+  ]
+}
