@@ -12,5 +12,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: python -m pip install pandas yfinance statsmodels
-      - run: python -m unittest discover -s tests -v
+      - run: python -m pip install pandas yfinance statsmodels scipy matplotlib pytest
+      - run: python -m pytest -q tests
+      - run: python src/run_research_v2.py

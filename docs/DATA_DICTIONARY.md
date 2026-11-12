@@ -36,4 +36,39 @@ python src/run_robustness_checks.py
 ```
 Do not rerun the Yahoo download unless the monthly factor files are missing and a new data snapshot is intended. Robustness excludes March-December 2020 inclusive, retaining 121 observations per bank. The committed `reports/results/robustness_key_results.csv` is a **rounded transcription of an observed successful local run**, not a substitute for the full-precision output that `run_robustness_checks.py` creates locally.
 
-Interpret p-values cautiously due to multiple comparisons, possible policy endogeneity, data-vendor differences, market factor co-movement and exceptional periods. The study does not currently include CPI/inflation, out-of-sample forecasting, announcement-timestamp surprises or stock-return total-return adjustment audit. Those must not be claimed as completed.
+Interpret p-values cautiously due to multiple comparisons, possible policy endogeneity, data-vendor differences, market factor co-movement and exceptional periods. The original study did not include CPI/inflation, out-of-sample forecasting, announcement-timestamp surprises or an independent stock-return adjustment audit. The V2 historical forecasting evaluation is documented below; the other omissions remain.
+# November 2026 analysis extension
+
+The existing variable definitions below are retained. New outputs are under `reports/results/enhanced/`; the source datasets have not changed. See `RESEARCH_REVISION_2026-11-12.md` for the full methods and declared test families.
+
+| New field | Definition and units |
+|---|---|
+| `bh_q`, `holm_p` | Adjusted p-values within the explicitly declared family; not adjusted over all project analyses |
+| `realized_volatility_pct`, `market_rv_pct` | Monthly square root of the sum of squared daily percent log returns, minimum 15 daily returns; not annualized |
+| `log_rv`, `log_market_rv` | Natural logs of the realized-volatility measures; volatility model market coefficient is an elasticity |
+| `bank_lag`, `market_lag` | Previous-calendar-month bank/NIFTY return in percent, formed before incomplete rows are dropped |
+| `repo_level_lag`, `repo_change_lag` | Previous-calendar-month repo level (%) and monthly change (percentage points) |
+| `vix_close_lag`, `fx_change_lag` | Previous-calendar-month VIX close (index points) and USD/INR change (%) |
+| `training_end`, `n_train` | Last strictly earlier training month and complete training observations at each forecast origin |
+| `oos_r_squared` | 1 minus model squared-error sum divided by expanding historical-mean squared-error sum on matched months |
+| `daily_intervals` | Number of daily return intervals compounded in a corrected effective-date event window |
+| `start_close_date`, `end_close_date` | Actual endpoints; conventional days -1 through +1 use closes t-2 and t+1 |
+| `raw_minus_market_pp` | Bank compound window return minus concurrent NIFTY compound return in percentage points; no beta adjustment |
+| `overlaps_other_event` | Another event's daily-return window overlaps at the same width on the common trading calendar |
+
+---
+
+
+
+## V2 extension on 12 November 2026
+
+Inputs remain frozen. `download_market_data.py` requests `auto_adjust=True`; this establishes the intended provider setting but is not an independent price or corporate-action reconciliation.
+
+- **VIX alternative:** `india_vix_change` is the difference in successive month-end VIX closes, in index points.
+- **Calendar HAC:** Bartlett weights and maxlags=3 match the original convention on contiguous samples. Omitted months receive zero score contributions, preserving calendar distances across gaps.
+- **Test families:** 16 same-month macro coefficients (4 banks x 4 factors excluding NIFTY); broader 40-test macro family; four joint VIX/FX tests; four exploratory break tests. BH and Holm outputs retain all coefficients, not just nominally significant ones.
+- **Forecasts:** fully prior-month bank return, NIFTY return, repo level/change, VIX mean and FX change; 60 initial training observations; expanding refits; 70 forecasts per bank from 2020-03 to 2025-12. These retrospective results do not use current-month factors and do not imply a live untouched evaluation.
+- **Corrected events:** inclusive daily return windows [-1,+1] and [-5,+5] require starting closes at t-2 and t-6. The original outputs use t-1 and t-5 starting closes and thus two and ten intervals. V2 saves actual endpoint dates, corrected test families of 15 raw and 12 relative tests, a combined 27-test family and a 45-test family including the legacy alternative windows without duplicating event day.
+- **Interpretation:** bank-minus-index is a raw difference, not beta-adjusted abnormal return. Effective dates do not identify announcement surprises. No overlapping corrected event windows were found, which does not prove independent events.
+
+Run `python src/run_research_v2.py`, then `python src/plot_research_v2.py`. Outputs, input SHA-256 hashes and versions are under `reports/v2/`. The original data and legacy numerical tables remain available.

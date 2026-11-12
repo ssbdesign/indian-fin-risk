@@ -1,0 +1,5 @@
+quantity,maximum_absolute_difference,matches_to_4_decimals
+coefficient,2.398081733190338e-14,True
+p_value,4.135580766728708e-14,True
+r_squared,1.6653345369377348e-16,True
+hac_std_error,3.574918139293004e-14,True

@@ -1,3 +1,38 @@
+# Indian financial risk research
+
+Four Indian banks and NIFTY 50, using the frozen 2010-2025 price history and 2015-2025 macro sample.
+
+## Updated research results
+
+The current manuscript is [the V2 paper](reports/v2/RESEARCH_PAPER.md). It separates contemporaneous associations from historical forecasts and corrects the legacy event-window endpoints.
+
+- The 12 original models reproduce to the precision of the committed results.
+- HDFC's negative FX coefficient survives both BH and Holm across 16 same-month macro tests; it does not survive Holm across the broader 40-test family.
+- SBI repo change has raw p=0.00646 and BH q=0.05166 in the 16-test family.
+- Correct inclusive three-day SBI bank-minus-index returns average -1.270 pp: adjusted p=0.0244 across 12 relative tests, 0.0550 across all 27 corrected event tests, and 0.0916 including legacy endpoints.
+- Fully lagged macro forecasts underperform a historical mean for all four banks over 70 expanding-origin forecasts per bank.
+
+These are exploratory observational results, not causal estimates or a validated trading system.
+
+## Reproduce the update
+
+Use Python 3.12 or 3.13. The version manifest records the environment actually used.
+
+```bash
+python -m pip install numpy pandas scipy statsmodels matplotlib yfinance pytest
+python src/run_research_v2.py
+python src/plot_research_v2.py
+python -m pytest -q tests/test_macro_factors.py tests/test_research_v2.py
+```
+
+No new downloads are required. The update writes to `reports/v2/results` and `reports/v2/figures` without changing existing input datasets or legacy result tables. Calendar-aware HAC retains the distance between observations across exclusions. The forecast design lags all predictors by calendar month; 60 initial training targets lead to 70 forecasts from March 2020 to December 2025.
+
+The new event calculation includes three daily returns using closes t-2 to t+1, or eleven using closes t-6 to t+5. The original `run_policy_event_study.py` and its outputs remain historical reproducibility material: their old three- and eleven-day labels contain two and ten return intervals respectively. Use the V2 corrected event outputs for the updated paper. `run_manifest.json` records all input hashes and package versions.
+
+## Earlier project documentation
+
+The following notes describe the original workflow. Numerical and interpretive updates above supersede earlier significance and forecast claims.
+
 # Indian Financial-Sector Risk and Macroeconomic Variables
 
 Research on RBI repo-rate changes, Indian bank returns and market conditions (2015–2025). This repository contains historical observational analysis, not causal identification or investment advice.
